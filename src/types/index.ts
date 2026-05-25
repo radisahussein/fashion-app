@@ -42,6 +42,32 @@ export interface CategoryStat {
   count: number
 }
 
+export interface LookbookRequirements {
+  min_accessories?: number
+  min_colors?: number
+  required_categories?: Category[]
+}
+
+export interface Lookbook {
+  id: string
+  user_id: string
+  name: string
+  description: string | null
+  requirements: LookbookRequirements
+  composite_image_url: string | null
+  created_at: string
+  updated_at: string
+  items?: ClothingItem[]
+}
+
+export type CreateLookbook = Omit<Lookbook, "id" | "user_id" | "created_at" | "updated_at" | "items">
+export type UpdateLookbook = Partial<CreateLookbook>
+
+export interface RequirementViolation {
+  rule: string
+  message: string
+}
+
 export interface OutfitStats {
   totalLogs: number
   mostWornItems: ItemStat[]
