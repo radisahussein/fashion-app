@@ -1,14 +1,16 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 export function LoginForm() {
+  const router = useRouter()
   const [email, setEmail] = useState("")
-  const [sent, setSent] = useState(false)
+  const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -18,31 +20,16 @@ export function LoginForm() {
     setError(null)
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     setLoading(false)
 
     if (error) {
-      setError(error.message)
+      setError("Invalid email or password")
     } else {
-      setSent(true)
+      router.push("/")
+      router.refresh()
     }
-  }
-
-  if (sent) {
-    return (
-      <div className="rounded-2xl bg-card border border-border p-6 text-center space-y-2 shadow-[0_2px_12px_rgba(45,38,38,0.06)]">
-        <p className="text-sm font-medium text-foreground">Check your email</p>
-        <p className="text-sm text-muted-foreground">
-          We sent a magic link to <span className="font-medium">{email}</span>
-        </p>
-      </div>
-    )
   }
 
   return (
@@ -51,15 +38,26 @@ export function LoginForm() {
       className="rounded-2xl bg-card border border-border p-6 space-y-4 shadow-[0_2px_12px_rgba(45,38,38,0.06)]"
     >
       <div className="space-y-1.5">
-        <Label htmlFor="email" className="text-sm font-medium">
-          Email
-        </Label>
+        <Label htmlFor="email" className="text-sm font-medium">Email</Label>
         <Input
           id="email"
           type="email"
           placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
+          className="rounded-xl"
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+        <Input
+          id="password"
+          type="password"
+          placeholder="••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
           className="rounded-xl"
         />
@@ -72,7 +70,7 @@ export function LoginForm() {
         disabled={loading}
         className="w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
       >
-        {loading ? "Sending…" : "Send magic link"}
+        {loading ? "Signing in…" : "Sign in"}
       </Button>
     </form>
   )
