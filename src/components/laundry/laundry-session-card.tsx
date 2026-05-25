@@ -33,7 +33,7 @@ export function LaundrySessionCard({ session }: Props) {
                 ? "bg-secondary/20 text-secondary"
                 : session.status === "partial"
                 ? "bg-destructive/15 text-destructive"
-                : "bg-laundry/20 text-laundry-foreground"
+                : "bg-laundry/20 text-foreground"
             }`}>
               {STATUS_LABEL[session.status]}
             </span>

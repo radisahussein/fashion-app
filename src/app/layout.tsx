@@ -23,12 +23,16 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Wardrobe",
   },
+  icons: {
+    apple: "/icons/icon-192.png",
+  },
 }
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: "#FAF7F4",
+  viewportFit: "cover",
 }
 
 export default function RootLayout({

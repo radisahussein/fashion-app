@@ -18,7 +18,7 @@ export function NavBar() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-sm border-t border-border">
-      <div className="flex items-center justify-around px-2 pb-safe pt-2 h-16">
+      <div className="flex items-center justify-around px-2 pt-2" style={{ paddingBottom: "max(env(safe-area-inset-bottom), 0.5rem)", height: "calc(4rem + env(safe-area-inset-bottom))" }}>
         {tabs.map(({ href, icon: Icon, label, isFab }) => {
           const isActive = pathname === href || (href !== "/" && pathname.startsWith(href.replace("/new", "")))
 
