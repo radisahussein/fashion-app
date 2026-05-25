@@ -1,10 +1,11 @@
 import Link from "next/link"
 import { Plus } from "lucide-react"
 import { getClothingItems } from "@/lib/db/clothing"
+import { getActiveSessionItemIds } from "@/lib/db/laundry"
 import { ClothingItemCard } from "@/components/closet/clothing-item-card"
 
 export default async function ClosetPage() {
-  const items = await getClothingItems()
+  const [items, laundryIds] = await Promise.all([getClothingItems(), getActiveSessionItemIds()])
 
   return (
     <main className="px-4 pt-6 pb-6">
@@ -37,7 +38,7 @@ export default async function ClosetPage() {
       ) : (
         <div className="grid grid-cols-2 gap-3">
           {items.map((item) => (
-            <ClothingItemCard key={item.id} item={item} />
+            <ClothingItemCard key={item.id} item={item} isInLaundry={laundryIds.has(item.id)} />
           ))}
         </div>
       )}

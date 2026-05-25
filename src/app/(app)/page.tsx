@@ -3,13 +3,16 @@ import Image from "next/image"
 import { BarChart2, ChevronRight, Star } from "lucide-react"
 import { getOutfitLogs } from "@/lib/db/outfit-logs"
 import { getClothingItems } from "@/lib/db/clothing"
+import { getLaundrySessions } from "@/lib/db/laundry"
 import { format, parseISO, subDays } from "date-fns"
 
 export default async function HomePage() {
-  const [logs, allItems] = await Promise.all([
+  const [logs, allItems, laundrySessions] = await Promise.all([
     getOutfitLogs(14),
     getClothingItems(),
+    getLaundrySessions(),
   ])
+  const ongoingLaundry = laundrySessions.filter((s) => s.status === "ongoing")
 
   const yesterday = subDays(new Date(), 1).toISOString().split("T")[0]
   const yesterdayLog = logs.find((l) => l.worn_date === yesterday)
@@ -64,6 +67,22 @@ export default async function HomePage() {
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">Logged</p>
         <p className="text-2xl font-semibold">{logs.length} <span className="text-base font-normal text-muted-foreground">outfits this month</span></p>
       </div>
+
+      {/* Laundry widget */}
+      {ongoingLaundry.length > 0 && (
+        <Section title="In laundry" href="/laundry">
+          {ongoingLaundry.map((s) => {
+            const total = s.items?.length ?? 0
+            const returned = s.items?.filter((i) => i.returned).length ?? 0
+            return (
+              <div key={s.id} className="flex justify-between items-center text-sm">
+                <span className="font-medium truncate">{s.location_name}</span>
+                <span className="text-muted-foreground shrink-0 ml-2">{returned}/{total}</span>
+              </div>
+            )
+          })}
+        </Section>
+      )}
 
       {/* Suggestions */}
       {suggestions.length > 0 && (

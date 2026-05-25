@@ -75,3 +75,30 @@ export interface OutfitStats {
   recentLogs: OutfitLog[]
   categoryBreakdown: CategoryStat[]
 }
+
+export type LaundryStatus = "ongoing" | "completed" | "partial"
+
+export interface LaundryItem {
+  id: string
+  session_id: string
+  clothing_item_id: string
+  returned: boolean
+  condition_note: string | null
+  clothing_item?: ClothingItem
+}
+
+export interface LaundrySession {
+  id: string
+  user_id: string
+  location_name: string
+  start_date: string
+  end_date: string | null
+  price: number | null
+  weight_kg: number | null
+  status: LaundryStatus
+  notes: string | null
+  created_at: string
+  items?: LaundryItem[]
+}
+
+export type CreateLaundrySession = Pick<LaundrySession, "location_name" | "start_date" | "price" | "weight_kg" | "notes">
